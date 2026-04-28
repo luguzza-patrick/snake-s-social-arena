@@ -3,8 +3,9 @@ import { mockBackend } from "./mockBackend";
 
 beforeEach(async () => {
   vi.useFakeTimers();
-  await mockBackend.logout();
+  const logout = mockBackend.logout();
   await vi.runAllTimersAsync();
+  await logout;
 });
 
 describe("mock backend", () => {
