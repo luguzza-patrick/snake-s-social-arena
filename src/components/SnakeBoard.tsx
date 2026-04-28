@@ -170,19 +170,19 @@ export const SnakeArcade = () => {
     <main className="min-h-screen overflow-hidden bg-background text-foreground">
       <div className="pointer-events-none fixed inset-0 bg-scanlines opacity-60" />
       <div className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-5 px-4 py-5 lg:px-6">
-        <header className="grid gap-4 rounded-lg border border-panel-border bg-panel/90 p-4 shadow-panel backdrop-blur lg:grid-cols-[1fr_auto] lg:items-center">
+        <header className="grid gap-4 rounded-lg border border-panel-border bg-panel/90 p-4 shadow-panel backdrop-blur lg:grid-cols-[1fr_minmax(280px,360px)] lg:items-start">
           <div>
             <p className="text-xs uppercase tracking-widest text-muted-foreground">Multiplayer-ready mockup</p>
             <h1 className="mt-2 font-display text-5xl leading-none text-primary">Snake Relay</h1>
+            <nav className="mt-4 flex flex-wrap gap-2" aria-label="Main game sections">
+              {navItems.map((item) => (
+                <Button key={item.id} variant={screen === item.id ? "arcade" : "terminal"} onClick={() => setScreen(item.id)}>
+                  {item.label}
+                </Button>
+              ))}
+            </nav>
           </div>
-          <nav className="flex flex-wrap gap-2" aria-label="Main game sections">
-            {navItems.map((item) => (
-              <Button key={item.id} variant={screen === item.id ? "arcade" : "terminal"} onClick={() => setScreen(item.id)}>
-                {item.label}
-              </Button>
-            ))}
-          </nav>
-          <div className="lg:col-span-2">
+          <div className="lg:justify-self-end">
             <AuthPanel user={user} onUser={setUser} />
           </div>
         </header>
