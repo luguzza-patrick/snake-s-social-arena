@@ -47,6 +47,21 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        panel: {
+          DEFAULT: "hsl(var(--panel))",
+          foreground: "hsl(var(--panel-foreground))",
+          border: "hsl(var(--panel-border))",
+        },
+        board: {
+          DEFAULT: "hsl(var(--board))",
+          cell: "hsl(var(--board-cell))",
+          border: "hsl(var(--board-border))",
+        },
+        snake: {
+          head: "hsl(var(--snake-head))",
+          body: "hsl(var(--snake-body))",
+        },
+        food: "hsl(var(--food))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -57,6 +72,19 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+      },
+      fontFamily: {
+        sans: ["Space Grotesk", "ui-sans-serif", "system-ui"],
+        display: ["Chakra Petch", "ui-sans-serif", "system-ui"],
+      },
+      backgroundImage: {
+        scanlines: "var(--scanlines)",
+      },
+      boxShadow: {
+        panel: "var(--shadow-panel)",
+        board: "var(--shadow-board)",
+        glow: "var(--shadow-glow)",
+        hero: "var(--shadow-hero)",
       },
       borderRadius: {
         lg: "var(--radius)",
