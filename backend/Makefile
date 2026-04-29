@@ -13,4 +13,4 @@ sync:
 	uv sync
 
 test:
-	PYTHONPATH=. uv run pytest tests/ -v
+	PYTHONPATH=. uv run pytest tests/ tests_integration/ -v

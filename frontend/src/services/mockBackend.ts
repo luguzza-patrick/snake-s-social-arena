@@ -26,15 +26,29 @@ type Credentials = {
 
 const API_BASE = "http://localhost:3000/api";
 
+let clientSideCookieJar: string | null = null;
+
 const apiFetch = async (endpoint: string, options?: RequestInit) => {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...(options?.headers as Record<string, string> || {}),
+  };
+
+  if (clientSideCookieJar) {
+    headers["Cookie"] = clientSideCookieJar;
+  }
+
   const response = await fetch(`${API_BASE}${endpoint}`, {
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(options?.headers || {}),
-    },
+    headers,
     credentials: "include",
   });
+
+  const setCookie = response.headers.get("set-cookie");
+  if (setCookie) {
+    // Basic parsing to extract the token part
+    clientSideCookieJar = setCookie.split(";")[0];
+  }
 
   if (!response.ok) {
     let errorMessage = "An error occurred";
