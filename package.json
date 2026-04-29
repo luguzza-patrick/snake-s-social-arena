@@ -1,0 +1,12 @@
+{
+  "name": "snake-s-social-arena",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && make run"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

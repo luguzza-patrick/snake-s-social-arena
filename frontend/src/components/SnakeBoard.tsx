@@ -85,7 +85,7 @@ const AuthPanel = ({ user, onUser }: { user: MockUser | null; onUser: (user: Moc
 
   return (
     <section className="rounded-lg border border-panel-border bg-panel/90 p-4 shadow-panel backdrop-blur">
-      <p className="text-xs uppercase tracking-widest text-muted-foreground">Mock login</p>
+      <p className="text-xs uppercase tracking-widest text-muted-foreground">Login</p>
       <div className="mt-3 grid gap-2">
         <input className="rounded-md border border-input bg-input px-3 py-2 text-sm text-foreground outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring" value={username} onChange={(event) => setUsername(event.target.value)} placeholder="username" />
         <input className="rounded-md border border-input bg-input px-3 py-2 text-sm text-foreground outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring" type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="password" />
@@ -172,7 +172,7 @@ export const SnakeArcade = () => {
       <div className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-5 px-4 py-5 lg:px-6">
         <header className="grid gap-4 rounded-lg border border-panel-border bg-panel/90 p-4 shadow-panel backdrop-blur lg:grid-cols-[1fr_minmax(280px,360px)] lg:items-start">
           <div>
-            <p className="text-xs uppercase tracking-widest text-muted-foreground">Multiplayer-ready mockup</p>
+            <p className="text-xs uppercase tracking-widest text-muted-foreground">Multiplayer-ready</p>
             <h1 className="mt-2 font-display text-5xl leading-none text-primary">Snake Relay</h1>
             <nav className="mt-4 flex flex-wrap gap-2" aria-label="Main game sections">
               {navItems.map((item) => (
