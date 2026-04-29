@@ -1,4 +1,4 @@
-import { createInitialSnakeState, chooseBotDirection, changeDirection, tickSnake, type SnakeMode, type SnakeState } from "@/lib/snakeLogic";
+import { type SnakeMode, type SnakeState } from "@/lib/snakeLogic";
 
 export type MockUser = {
   id: string;
@@ -24,93 +24,89 @@ type Credentials = {
   password: string;
 };
 
-const users = new Map<string, MockUser>([
-  ["pixel", { id: "u-pixel", username: "pixel" }],
-]);
+const API_BASE = "http://localhost:3000/api";
 
-let currentUser: MockUser | null = null;
-
-let leaderboard: LeaderboardEntry[] = [
-  { id: "l-1", username: "NeonNoodle", score: 420, mode: "pass-through" },
-  { id: "l-2", username: "WallRunner", score: 360, mode: "walls" },
-  { id: "l-3", username: "ByteFang", score: 310, mode: "pass-through" },
-  { id: "l-4", username: "GridGhost", score: 260, mode: "walls" },
-];
-
-let spectatedPlayers: SpectatedPlayer[] = [
-  { id: "s-1", username: "NeonNoodle", mode: "pass-through", state: { ...createInitialSnakeState("pass-through", 12), status: "playing", score: 80 } },
-  { id: "s-2", username: "WallRunner", mode: "walls", state: { ...createInitialSnakeState("walls", 12), status: "playing", score: 50, food: { x: 3, y: 9 } } },
-  { id: "s-3", username: "ByteFang", mode: "pass-through", state: { ...createInitialSnakeState("pass-through", 12), status: "playing", score: 120, food: { x: 9, y: 2 } } },
-];
-
-const wait = async <T,>(value: T): Promise<T> =>
-  new Promise((resolve) => {
-    window.setTimeout(() => resolve(value), 120);
+const apiFetch = async (endpoint: string, options?: RequestInit) => {
+  const response = await fetch(`${API_BASE}${endpoint}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(options?.headers || {}),
+    },
+    credentials: "include",
   });
 
-const normalizeUsername = (username: string) => username.trim().replace(/\s+/g, "_").slice(0, 18);
+  if (!response.ok) {
+    let errorMessage = "An error occurred";
+    try {
+      const data = await response.json();
+      errorMessage = data.detail || errorMessage;
+    } catch {
+      if (response.status === 401) {
+        errorMessage = "Unauthorized";
+      } else if (response.status === 400) {
+        errorMessage = "Bad Request";
+      }
+    }
+    throw new Error(errorMessage);
+  }
+
+  return response.json();
+};
 
 export const mockBackend = {
-  async getSession() {
-    return wait(currentUser);
-  },
-
-  async login(credentials: Credentials) {
-    const username = normalizeUsername(credentials.username);
-    if (!username || credentials.password.length < 3) {
-      throw new Error("Use a username and a password with at least 3 characters.");
+  async getSession(): Promise<MockUser | null> {
+    try {
+      return await apiFetch("/auth/session");
+    } catch (e) {
+      return null;
     }
-
-    const user = users.get(username.toLowerCase()) ?? { id: `u-${username.toLowerCase()}`, username };
-    users.set(username.toLowerCase(), user);
-    currentUser = user;
-    return wait(user);
   },
 
-  async signUp(credentials: Credentials) {
-    const username = normalizeUsername(credentials.username);
-    if (!username || credentials.password.length < 3) {
-      throw new Error("Use a username and a password with at least 3 characters.");
-    }
-
-    if (users.has(username.toLowerCase())) {
-      throw new Error("That username already exists in the mock arcade.");
-    }
-
-    const user = { id: `u-${Date.now()}`, username };
-    users.set(username.toLowerCase(), user);
-    currentUser = user;
-    return wait(user);
-  },
-
-  async logout() {
-    currentUser = null;
-    return wait(true);
-  },
-
-  async getLeaderboard() {
-    return wait([...leaderboard].sort((a, b) => b.score - a.score));
-  },
-
-  async submitScore(entry: Omit<LeaderboardEntry, "id" | "username"> & { username?: string }) {
-    const username = entry.username ?? currentUser?.username ?? "Guest Snake";
-    const row = { id: `l-${Date.now()}`, username, score: entry.score, mode: entry.mode };
-    leaderboard = [row, ...leaderboard].sort((a, b) => b.score - a.score).slice(0, 8);
-    return wait(row);
-  },
-
-  async getLivePlayers() {
-    return wait(spectatedPlayers.map((player) => ({ ...player, state: { ...player.state, snake: [...player.state.snake] } })));
-  },
-
-  async advanceLivePlayers() {
-    spectatedPlayers = spectatedPlayers.map((player, index) => {
-      const nextDirection = chooseBotDirection(player.state);
-      const advanced = tickSnake(changeDirection(player.state, nextDirection), index + player.state.score + 1);
-      const state = advanced.status === "game-over" ? { ...createInitialSnakeState(player.mode, 12), status: "playing" as const } : advanced;
-      return { ...player, state };
+  async login(credentials: Credentials): Promise<MockUser> {
+    return apiFetch("/auth/login", {
+      method: "POST",
+      body: JSON.stringify(credentials),
     });
+  },
 
+  async signUp(credentials: Credentials): Promise<MockUser> {
+    return apiFetch("/auth/signup", {
+      method: "POST",
+      body: JSON.stringify(credentials),
+    });
+  },
+
+  async logout(): Promise<boolean> {
+    try {
+      await apiFetch("/auth/logout", {
+        method: "POST",
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  },
+
+  async getLeaderboard(): Promise<LeaderboardEntry[]> {
+    return apiFetch("/leaderboard");
+  },
+
+  async submitScore(entry: Omit<LeaderboardEntry, "id" | "username"> & { username?: string }): Promise<LeaderboardEntry> {
+    return apiFetch("/leaderboard", {
+      method: "POST",
+      body: JSON.stringify(entry),
+    });
+  },
+
+  async getLivePlayers(): Promise<SpectatedPlayer[]> {
+    return apiFetch("/live-players");
+  },
+
+  async advanceLivePlayers(): Promise<SpectatedPlayer[]> {
+    // This method was a mock feature to simulate other players moving.
+    // In a real application, the backend state would update independently.
+    // We can just fetch the latest state from the backend.
     return this.getLivePlayers();
   },
 };
