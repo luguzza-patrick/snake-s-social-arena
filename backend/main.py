@@ -1,6 +1,5 @@
-def main():
-    print("Hello from backend!")
-
+import uvicorn
 
 if __name__ == "__main__":
-    main()
+    # In production, you might want to use host="0.0.0.0"
+    uvicorn.run("app.main:app", host="127.0.0.1", port=3000, reload=True)
