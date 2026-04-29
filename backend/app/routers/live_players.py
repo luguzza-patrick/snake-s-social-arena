@@ -1,10 +1,18 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 from typing import List
-from ..models import SpectatedPlayer
-from .. import database
+from ..models import SpectatedPlayer, SnakeState
+from ..db_models import LivePlayerDB
+from ..database import get_db
 
 router = APIRouter(prefix="/live-players", tags=["live-players"])
 
 @router.get("", response_model=List[SpectatedPlayer])
-async def get_live_players():
-    return [SpectatedPlayer(**player) for player in database.live_players]
+def get_live_players(db: Session = Depends(get_db)):
+    players = db.query(LivePlayerDB).all()
+    return [SpectatedPlayer(
+        id=player.id,
+        username=player.username,
+        mode=player.mode,
+        state=SnakeState(**player.state)
+    ) for player in players]

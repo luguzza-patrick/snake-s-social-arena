@@ -147,9 +147,9 @@ export const SnakeArcade = () => {
 
   useEffect(() => {
     if (game.status === "game-over" && game.score > 0) {
-      mockBackend.submitScore({ score: game.score, mode }).then(() => mockBackend.getLeaderboard().then(setLeaderboard));
+      mockBackend.submitScore({ score: game.score, mode, username: user?.username }).then(() => mockBackend.getLeaderboard().then(setLeaderboard));
     }
-  }, [game.status, game.score, mode]);
+  }, [game.status, game.score, mode, user?.username]);
 
   const reset = (nextMode = mode) => {
     setMode(nextMode);
