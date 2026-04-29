@@ -12,6 +12,9 @@ sessions: Dict[str, str] = {}
 leaderboard: List[dict] = [
     {"id": "l-1", "username": "NeonNoodle", "score": 420, "mode": "walls"},
     {"id": "l-2", "username": "SlitherStar", "score": 350, "mode": "pass-through"},
+    {"id": "l-3", "username": "PixelPioneer", "score": 850, "mode": "walls"},
+    {"id": "l-4", "username": "SnakeCharmer", "score": 620, "mode": "pass-through"},
+    {"id": "l-5", "username": "PythonPro", "score": 150, "mode": "walls"},
 ]
 # live_players: list of SpectatedPlayer
 live_players: List[dict] = [
@@ -29,6 +32,21 @@ live_players: List[dict] = [
             "mode": "walls",
             "status": "playing"
         }
+    },
+    {
+        "id": "s-2",
+        "username": "SnakeCharmer",
+        "mode": "pass-through",
+        "state": {
+            "gridSize": 18,
+            "snake": [{"x": 10, "y": 10}, {"x": 10, "y": 11}],
+            "food": {"x": 2, "y": 2},
+            "direction": "up",
+            "nextDirection": "up",
+            "score": 45,
+            "mode": "pass-through",
+            "status": "game-over"
+        }
     }
 ]
 
@@ -42,6 +60,9 @@ def reset_db():
     leaderboard[:] = [
         {"id": "l-1", "username": "NeonNoodle", "score": 420, "mode": "walls"},
         {"id": "l-2", "username": "SlitherStar", "score": 350, "mode": "pass-through"},
+        {"id": "l-3", "username": "PixelPioneer", "score": 850, "mode": "walls"},
+        {"id": "l-4", "username": "SnakeCharmer", "score": 620, "mode": "pass-through"},
+        {"id": "l-5", "username": "PythonPro", "score": 150, "mode": "walls"},
     ]
     live_players[:] = [
         {
@@ -57,6 +78,21 @@ def reset_db():
                 "score": 120,
                 "mode": "walls",
                 "status": "playing"
+            }
+        },
+        {
+            "id": "s-2",
+            "username": "SnakeCharmer",
+            "mode": "pass-through",
+            "state": {
+                "gridSize": 18,
+                "snake": [{"x": 10, "y": 10}, {"x": 10, "y": 11}],
+                "food": {"x": 2, "y": 2},
+                "direction": "up",
+                "nextDirection": "up",
+                "score": 45,
+                "mode": "pass-through",
+                "status": "game-over"
             }
         }
     ]
