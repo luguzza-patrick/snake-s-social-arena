@@ -51,6 +51,9 @@ jobs:
           make test
 
       - name: Run Full Integration Tests
+        env:
+          ENV: test
+          DEBUG: wait-on
         run: npm test
 
   deploy:

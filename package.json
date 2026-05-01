@@ -7,7 +7,7 @@
     "dev:backend": "cd backend && make run",
     "test:frontend": "cd frontend && npm run test",
     "test:backend": "cd backend && make test",
-    "test": "concurrently -k -s \"last\" \"npm run dev:backend\" \"wait-on http-get://localhost:3000/ && npm run test:frontend\""
+    "test": "concurrently -k -s \"last\" \"npm run dev:backend\" \"wait-on http-get://127.0.0.1:3000/ && npm run test:frontend\""
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
