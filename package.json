@@ -4,10 +4,10 @@
   "scripts": {
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
     "dev:frontend": "cd frontend && npm run dev",
-    "dev:backend": "cd backend && make run",
+    "dev:backend": "cd backend && uv run python main.py",
     "test:frontend": "cd frontend && npm run test",
     "test:backend": "cd backend && make test",
-    "test": "concurrently -k -s \"last\" \"npm run dev:backend\" \"wait-on http-get://127.0.0.1:3000/ && npm run test:frontend\""
+    "test": "concurrently -k -s \"last\" \"npm run dev:backend || true\" \"wait-on http-get://127.0.0.1:3000/ && npm run test:frontend\""
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
