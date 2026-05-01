@@ -53,7 +53,14 @@ jobs:
       - name: Run Full Integration Tests
         env:
           ENV: test
-        run: npm test
+        run: |
+          npm run dev:backend &
+          BACKEND_PID=$!
+          npx wait-on http-get://127.0.0.1:3000/ --timeout 60000
+          npm run test:frontend
+          TEST_EXIT_CODE=$?
+          kill $BACKEND_PID
+          exit $TEST_EXIT_CODE
 
   deploy:
     name: Deploy to Render
