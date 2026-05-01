@@ -1,5 +1,8 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from .routers import auth, leaderboard, live_players
 
 app = FastAPI(
@@ -25,6 +28,27 @@ app.include_router(auth.router, prefix="/api")
 app.include_router(leaderboard.router, prefix="/api")
 app.include_router(live_players.router, prefix="/api")
 
-@app.get("/")
-async def root():
+# Serve static files
+# Check if the static directory exists (it will be created during Docker build)
+static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
+
+@app.get("/api")
+async def api_root():
+    return {"message": "Welcome to Snake Social Arena API", "docs": "/api/docs"}
+
+# Serve assets (JS, CSS, images)
+if os.path.exists(os.path.join(static_dir, "assets")):
+    app.mount("/assets", StaticFiles(directory=os.path.join(static_dir, "assets")), name="assets")
+
+# Catch-all route for SPA
+@app.get("/{full_path:path}")
+async def serve_spa(full_path: str):
+    # If the path starts with api, don't serve index.html (should have been handled by routers)
+    if full_path.startswith("api"):
+        return {"error": "Not Found"}
+    
+    index_path = os.path.join(static_dir, "index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    
     return {"message": "Welcome to Snake Social Arena API", "docs": "/api/docs"}

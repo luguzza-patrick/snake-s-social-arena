@@ -16,8 +16,10 @@ services:
       timeout: 5s
       retries: 5
 
-  backend:
-    build: ./backend
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: always
     environment:
       - DATABASE_URL=postgresql://snake_user:snake_password@db:5432/snake_db
@@ -25,15 +27,8 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "3000:3000"
+      - "8080:3000"
 
-  frontend:
-    build: ./frontend
-    restart: always
-    ports:
-      - "8080:80"
-    depends_on:
-      - backend
 
 volumes:
   postgres_data:
