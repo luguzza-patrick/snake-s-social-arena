@@ -5,7 +5,10 @@ from .routers import auth, leaderboard, live_players
 app = FastAPI(
     title="Snake Social Arena API",
     description="Backend API for the real-time multiplayer Snake game platform.",
-    version="1.0.0"
+    version="1.0.0",
+    docs_url="/api/docs",
+    redoc_url="/api/redoc",
+    openapi_url="/api/openapi.json"
 )
 
 # CORS configuration
@@ -24,4 +27,4 @@ app.include_router(live_players.router, prefix="/api")
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to Snake Social Arena API", "docs": "/docs"}
+    return {"message": "Welcome to Snake Social Arena API", "docs": "/api/docs"}

@@ -24,7 +24,7 @@ type Credentials = {
   password: string;
 };
 
-const API_BASE = "http://localhost:3000/api";
+const API_BASE = "/api";
 
 let clientSideCookieJar: string | null = null;
 
